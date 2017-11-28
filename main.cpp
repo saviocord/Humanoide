@@ -13,30 +13,37 @@ GLfloat rotX, rotY, rotZ;
 int csg_op = CSG_HELP;
 GLfloat lightpos[] = {-25.f, 0.f, 50.f, 1.f};
 
+static int cabecaRot = 0;
+
 struct Posicao {
     float x, y, z;
-    Posicao(float x, float y, float z) : x(x), y(y), z(z) { }
+    Posicao(GLfloat x, GLfloat y, GLfloat z) : x(x), y(y), z(z) { }
 };
 
+Posicao cabeca(0, 6, 0);
+Posicao tronco(0, 4, 0);
+
+Posicao virilha(0, 0, 0);
+Posicao virilhaD(1, 0, 0);
+Posicao virilhaE(-1, 0, 0);
+
+Posicao cotoveloD(2, 4, 0);
+Posicao maoD(3, 4, 0);
+
+Posicao cotoveloE(-2, 4, 0);
+Posicao maoE(-3, 4, 0);
+
+Posicao joelhoD(1, -2, 0);
+Posicao tornozeloD(1, -4, 0);
+Posicao peD(1, -4, 1);
+
+Posicao joelhoE(-1, -2, 0);
+Posicao tornozeloE(-1, -4, 0);
+Posicao peE(-1, -4, 1);
+
+
 void iniHumanoide(){
-    Posicao cabeca();
-    Posicao tronco();
 
-    Posicao virilha();
-    Posicao virilhaD();
-    Posicao virilhaE();
-
-    Posicao cotoveloD();
-    Posicao maoD();
-
-    Posicao cotoveloE();
-    Posicao maoE();
-
-    Posicao joelhoD();
-    Posicao calcanharD();
-
-    Posicao joelhoE();
-    Posicao calcanharE();
 }
 
 void drawBitmapText(char *string,float x,float y,float z)
@@ -67,73 +74,95 @@ void draw() {
         //glTranslated(-(x/2), 0, 0);
         glRotatef(-45, 0, 1, 0);
         glColor3f(0.0, 0.0, 0.0);
-        glPointSize(5);
+        glPointSize(8);
+        glLineWidth(3);
+
+            glPushMatrix();
+                glTranslatef(tronco.x, tronco.y, tronco.z);
+                glRotatef ((GLfloat) cabecaRot, 0.0, 0.0, 1.0);
+                glTranslatef(-tronco.x, -tronco.y, -tronco.z);
+                glBegin(GL_POINTS);
+                    glVertex3f(cabeca.x, cabeca.y, cabeca.z);
+                glEnd();
+            glPopMatrix();
         glBegin(GL_POINTS);
-            glVertex3f(0, 6, 0);//cabeça
+//            glVertex3f(cabeca.x, cabeca.y, cabeca.z);
 
-            glVertex3f(-3, 4, 0);
-            glVertex3f(-2, 4, 0);
-            glVertex3f(0, 4, 0);//tronco
-            glVertex3f(2, 4, 0);
-            glVertex3f(3, 4, 0);
+            glVertex3f(tronco.x, tronco.y, tronco.z);
+            glVertex3f(virilha.x, virilha.y, virilha.z);
 
-            glVertex3f(0, 0, 0);//virilha
-            glVertex3f(1, 0, 0);
-            glVertex3f(-1, 0, 0);
+            glVertex3f(virilhaD.x, virilhaD.y, virilhaD.z);
+            glVertex3f(virilhaE.x, virilhaE.y, virilhaE.z);
 
-            glVertex3f(1, -2, 0);//coxaDireita
-            glVertex3f(-1, -2, 0);//coxaEsquerda
+            glVertex3f(joelhoD.x, joelhoD.y, joelhoD.z);
+            glVertex3f(joelhoE.x, joelhoE.y, joelhoE.z);
 
-            glVertex3f(1, -4, 0);//canelaDireita
-            glVertex3f(-1, -4, 0);//canelaEsquerda
+            glVertex3f(tornozeloD.x, tornozeloD.y, tornozeloD.z);
+            glVertex3f(tornozeloE.x, tornozeloE.y, tornozeloE.z);
 
-            glVertex3f(1, -4, 1);//péDireito
-            glVertex3f(-1, -4, 1);//péEsquerdo
+            glVertex3f(peD.x, peD.y, peD.z);
+            glVertex3f(peE.x, peE.y, peE.z);
+
+            glVertex3f(cotoveloD.x, cotoveloD.y, cotoveloD.z);
+            glVertex3f(cotoveloE.x, cotoveloE.y, cotoveloE.z);
+
+            glVertex3f(maoD.x, maoD.y, maoD.z);
+            glVertex3f(maoE.x, maoE.y, maoE.z);
         glEnd();
-        glBegin(GL_LINES);
-           //virilha-tronco
-           glVertex3f(0, 0, 0);
-           glVertex3f(0, 4, 0);
-           //tronco-cabeça
-           glVertex3f(0, 4, 0);
-           glVertex3f(0, 6, 0);
-           //tronco-braçoDireito
-           glVertex3f(0, 4, 0);
-           glVertex3f(2, 4, 0);
-           //braçoDireito-antebraço
-           glVertex3f(2, 4, 0);
-           glVertex3f(3, 4, 0);
-           //tronco-braçoEsquerdo
-           glVertex3f(0, 4, 0);
-           glVertex3f(-2, 4, 0);
-           //braçoEsquerdo-antebraço
-           glVertex3f(-2, 4, 0);
-           glVertex3f(-3, 4, 0);
 
-           //virilha-inicioPernaDireta
-           glVertex3f(0, 0, 0);
-           glVertex3f(1, 0, 0);
-           //virilha-inicioPernaEsquerda
-           glVertex3f(0, 0, 0);
-           glVertex3f(-1, 0, 0);
-           //inicioPernaDireita-coxaDireita
-           glVertex3f(1, 0, 0);
-           glVertex3f(1, -2, 0);
-           //inicioPernaEsquerda-coxaEsquerda
-           glVertex3f(-1, 0, 0);
-           glVertex3f(-1, -2, 0);
-           //coxaDireita-canelaDireta
-           glVertex3f(1, -2, 0);
-           glVertex3f(1, -4, 0);
-           //coxaEsquerda-canelaEsquerda
-           glVertex3f(-1, -2, 0);
-           glVertex3f(-1, -4, 0);
-           //canelaDireita-péDireto
-           glVertex3f(1, -4, 0);
-           glVertex3f(1, -4, 1);
-           //canelaEsqueda-péEsquedo
-           glVertex3f(-1, -4, 0);
-           glVertex3f(-1, -4, 1);
+        glPushMatrix();
+            glTranslatef(tronco.x, tronco.y, tronco.z);
+            glRotatef ((GLfloat) cabecaRot, 0.0, 0.0, 1.0);
+            glTranslatef(-tronco.x, -tronco.y, -tronco.z);
+            glBegin(GL_LINES);
+                glVertex3f(cabeca.x, cabeca.y, cabeca.z);
+                glVertex3f(tronco.x, tronco.y, tronco.z);
+            glEnd();
+        glPopMatrix();
+
+        glBegin(GL_LINES);
+//            glVertex3f(cabeca.x, cabeca.y, cabeca.z);
+//            glVertex3f(tronco.x, tronco.y, tronco.z);
+
+            glVertex3f(tronco.x, tronco.y, tronco.z);
+            glVertex3f(virilha.x, virilha.y, virilha.z);
+
+            glVertex3f(virilha.x, virilha.y, virilha.z);
+            glVertex3f(virilhaD.x, virilhaD.y, virilhaD.z);
+
+            glVertex3f(virilha.x, virilha.y, virilha.z);
+            glVertex3f(virilhaE.x, virilhaE.y, virilhaE.z);
+
+            glVertex3f(virilhaD.x, virilhaD.y, virilhaD.z);
+            glVertex3f(joelhoD.x, joelhoD.y, joelhoD.z);
+
+            glVertex3f(virilhaE.x, virilhaE.y, virilhaE.z);
+            glVertex3f(joelhoE.x, joelhoE.y, joelhoE.z);
+
+            glVertex3f(joelhoD.x, joelhoD.y, joelhoD.z);
+            glVertex3f(tornozeloD.x, tornozeloD.y, tornozeloD.z);
+
+            glVertex3f(joelhoE.x, joelhoE.y, joelhoE.z);
+            glVertex3f(tornozeloE.x, tornozeloE.y, tornozeloE.z);
+
+            glVertex3f(tornozeloD.x, tornozeloD.y, tornozeloD.z);
+            glVertex3f(peD.x, peD.y, peD.z);
+
+            glVertex3f(tornozeloE.x, tornozeloE.y, tornozeloE.z);
+            glVertex3f(peE.x, peE.y, peE.z);
+
+            glVertex3f(tronco.x, tronco.y, tronco.z);
+            glVertex3f(cotoveloD.x, cotoveloD.y, cotoveloD.z);
+
+            glVertex3f(tronco.x, tronco.y, tronco.z);
+            glVertex3f(cotoveloE.x, cotoveloE.y, cotoveloE.z);
+
+            glVertex3f(cotoveloD.x, cotoveloD.y, cotoveloD.z);
+            glVertex3f(maoD.x, maoD.y, maoD.z);
+
+            glVertex3f(cotoveloE.x, cotoveloE.y, cotoveloE.z);
+            glVertex3f(maoE.x, maoE.y, maoE.z);
+
        glEnd();
     glPopMatrix();
 
@@ -166,49 +195,22 @@ void key(unsigned char key, int, int) {
     switch(key) {
         case 'q':
             exit(0);
-        case '-':
-            rotZ -= 1;
-            glutPostRedisplay();
-            break;
         case '+':
-            rotZ += 1;
-            glutPostRedisplay();
+            cabecaRot = (cabecaRot + 5) % 360;
+            std::cout<<"+"<<std::endl;
             break;
-        case 'a':
-            rotY -= 1;
-            glutPostRedisplay();
-            break;
-        case 'd':
-            rotY += 1;
-            glutPostRedisplay();
-            break;
-        case 'w':
-            rotX -= 1;
-            glutPostRedisplay();
-            break;
-        case 's':
-            rotX += 1;
-            glutPostRedisplay();
+        case '-':
+            cabecaRot = (cabecaRot - 5) % 360;
+            std::cout<<"-"<<std::endl;
             break;
     }
+    draw();
 }
 
-void menu(int csgop) {
-    csg_op = csgop;
-    glutPostRedisplay();
+void mouse(int botao, int estado, int x, int y){
+    std::cout<<" x:"<<x<<" y:"<<y<<" estado:"<<estado<<" botao:"<<botao<<std::endl;
 }
 
-void menuCallback(void){
-
-    glutCreateMenu(menu);
-    glutAddMenuEntry("Help", CSG_HELP);
-
-    glutAttachMenu(GLUT_RIGHT_BUTTON);
-}
-
-void  mouse(int key, int state, int x, int y) {
-
-}
 
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
@@ -227,7 +229,6 @@ int main(int argc, char **argv) {
     glutKeyboardFunc(key);
     glutSpecialFunc(specialKey);
     glutMouseFunc(mouse);
-    menuCallback();
 
     glEnable(GL_CULL_FACE);
 
